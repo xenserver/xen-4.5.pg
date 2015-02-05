@@ -18,10 +18,11 @@ diff --git a/tools/libxc/xc_private.c b/tools/libxc/xc_private.c
 index 1c214dd..0941b06 100644
 --- a/tools/libxc/xc_private.c
 +++ b/tools/libxc/xc_private.c
-@@ -858,6 +858,66 @@ int write_exact(int fd, const void *data, size_t size)
+@@ -858,6 +858,68 @@ int write_exact(int fd, const void *data, size_t size)
      return 0;
  }
  
++#ifndef __MINIOS__
 +int writev_exact(int fd, const struct iovec *iov, int iovcnt)
 +{
 +    struct iovec *local_iov = NULL;
@@ -81,6 +82,7 @@ index 1c214dd..0941b06 100644
 +    errno = saved_errno;
 +    return rc;
 +}
++#endif
 +
  int xc_ffs8(uint8_t x)
  {
@@ -89,19 +91,23 @@ diff --git a/tools/libxc/xc_private.h b/tools/libxc/xc_private.h
 index 010e00f..5b3f04e 100644
 --- a/tools/libxc/xc_private.h
 +++ b/tools/libxc/xc_private.h
-@@ -28,6 +28,7 @@
+@@ -28,6 +28,9 @@
  #include <sys/stat.h>
  #include <stdlib.h>
  #include <sys/ioctl.h>
++#ifndef __MINIOS__
 +#include <sys/uio.h>
++#endif
  
  #include "_paths.h"
  #include "xenctrl.h"
-@@ -344,6 +345,7 @@ int xc_flush_mmu_updates(xc_interface *xch, struct xc_mmu *mmu);
+@@ -344,6 +345,9 @@ int xc_flush_mmu_updates(xc_interface *xch, struct xc_mmu *mmu);
  /* Return 0 on success; -1 on error setting errno. */
  int read_exact(int fd, void *data, size_t size); /* EOF => -1, errno=0 */
  int write_exact(int fd, const void *data, size_t size);
++#ifndef __MINIOS__
 +int writev_exact(int fd, const struct iovec *iov, int iovcnt);
++#endif
  
  int xc_ffs8(uint8_t x);
  int xc_ffs16(uint16_t x);
