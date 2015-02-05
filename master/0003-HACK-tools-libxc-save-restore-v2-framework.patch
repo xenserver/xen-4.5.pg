@@ -132,10 +132,11 @@ diff --git a/tools/libxc/xc_domain_restore.c b/tools/libxc/xc_domain_restore.c
 index a0a7b9e..73939b8 100644
 --- a/tools/libxc/xc_domain_restore.c
 +++ b/tools/libxc/xc_domain_restore.c
-@@ -1502,6 +1502,14 @@ int xc_domain_restore(xc_interface *xch, int io_fd, uint32_t dom,
+@@ -1502,6 +1502,16 @@ int xc_domain_restore(xc_interface *xch, int io_fd, uint32_t dom,
      struct restore_ctx *ctx = &_ctx;
      struct domain_info_context *dinfo = &ctx->dinfo;
  
++#ifndef __MINIOS__
 +    if ( getenv("XG_MIGRATION_V2") )
 +    {
 +        return xc_domain_restore2(
@@ -143,6 +144,7 @@ index a0a7b9e..73939b8 100644
 +            store_domid, console_evtchn, console_mfn, console_domid,
 +            hvm,  pae,  superpages, checkpointed_stream, callbacks);
 +    }
++#endif
 +
      DPRINTF("%s: starting restore of new domid %u", __func__, dom);
  
@@ -151,15 +153,17 @@ diff --git a/tools/libxc/xc_domain_save.c b/tools/libxc/xc_domain_save.c
 index 02544f8..a23ed68 100644
 --- a/tools/libxc/xc_domain_save.c
 +++ b/tools/libxc/xc_domain_save.c
-@@ -894,6 +894,12 @@ int xc_domain_save(xc_interface *xch, int io_fd, uint32_t dom, uint32_t max_iter
+@@ -894,6 +894,14 @@ int xc_domain_save(xc_interface *xch, int io_fd, uint32_t dom, uint32_t max_iter
  
      int completed = 0;
  
++#ifndef __MINIOS__
 +    if ( getenv("XG_MIGRATION_V2") )
 +    {
 +        return xc_domain_save2(xch, io_fd, dom, max_iters,
 +                               max_factor, flags, callbacks, hvm);
 +    }
++#endif
 +
      DPRINTF("%s: starting save of domid %u", __func__, dom);
  
