@@ -1,0 +1,27 @@
+From e8577050577f703074e8d057096b6f0dffb918c4 Mon Sep 17 00:00:00 2001
+From: Len Brown <len.brown@intel.com>
+Date: Wed, 20 May 2015 13:23:17 +0200
+Subject: [PATCH] mwait-idle: support additional Broadwell model
+
+Signed-off-by: Len Brown <len.brown@intel.com>
+[Linux commit bea57077e44ec9c1e6d3a3c142c8a3c0289e290d]
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+---
+ xen/arch/x86/cpu/mwait-idle.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/xen/arch/x86/cpu/mwait-idle.c b/xen/arch/x86/cpu/mwait-idle.c
+index 6dd5822..fbe0582 100644
+--- a/xen/arch/x86/cpu/mwait-idle.c
++++ b/xen/arch/x86/cpu/mwait-idle.c
+@@ -683,6 +683,7 @@ static struct intel_idle_id {
+ 	ICPU(0x46, hsw),
+ 	ICPU(0x4d, avn),
+ 	ICPU(0x3d, bdw),
++	ICPU(0x47, bdw),
+ 	ICPU(0x4f, bdw),
+ 	ICPU(0x56, bdw),
+ 	{}
+-- 
+2.1.0
+

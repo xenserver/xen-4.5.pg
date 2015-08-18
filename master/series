@@ -103,6 +103,7 @@ backport-890674d13feb.patch #   2015-05-13 13:01:25 - arm: provide add_sized()
 backport-45fcc4568c51.patch #   2015-05-15 07:49:12 - use ticket locks for spin locks
 backport-e62e49e6d5d4.patch #   2015-05-15 07:52:25 - x86,arm: remove asm/spinlock.h from all architectures
 backport-1037e33c88bb.patch #   2015-05-19 13:49:22 - spinlock: fix build with older GCC
+backport-e8577050577f.patch #   2015-05-20 12:23:17 - mwait-idle: support additional Broadwell model
 backport-a3046cf80952.patch #   2015-06-10 11:06:02 - evtchn: profile event channel lock
 backport-a622b5ade2bd.patch #   2015-06-16 11:30:16 - evtchn: factor out freeing an event channel
 backport-01280dc19cf3.patch #   2015-06-18 13:53:23 - evtchn: simplify port_is_valid()
