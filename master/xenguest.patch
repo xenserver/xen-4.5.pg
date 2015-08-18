@@ -11,10 +11,10 @@ index 8c8c06f..b263767 100644
  tools/xenmon/xenbaked
  tools/xenpaging/xenpaging
 diff --git a/mk/xen.spec.in b/mk/xen.spec.in
-index 247ea73..3e8a37e 100644
+index 05fb910..cfdc647 100644
 --- a/mk/xen.spec.in
 +++ b/mk/xen.spec.in
-@@ -424,6 +424,7 @@ rm -rf $RPM_BUILD_ROOT
+@@ -440,6 +440,7 @@ rm -rf $RPM_BUILD_ROOT
  %{_libexecdir}/%{name}/bin/xenconsole
  %{_libexecdir}/%{name}/bin/xenctx
  %{_libexecdir}/%{name}/bin/xendomains
@@ -763,10 +763,10 @@ index 0000000..3427882
 + */
 diff --git a/tools/xenguest/xenguest_stubs.c b/tools/xenguest/xenguest_stubs.c
 new file mode 100644
-index 0000000..c14a20e
+index 0000000..99e3499
 --- /dev/null
 +++ b/tools/xenguest/xenguest_stubs.c
-@@ -0,0 +1,729 @@
+@@ -0,0 +1,734 @@
 +/*
 + * Copyright (C) 2006-2009 Citrix Systems Inc.
 + *
@@ -826,6 +826,7 @@ index 0000000..c14a20e
 +    int hpet;
 +    int nested_hvm;
 +    unsigned cores_per_socket;
++    uint64_t mmio_size;
 +};
 +
 +static char *
@@ -976,6 +977,7 @@ index 0000000..c14a20e
 +    f->tsc_mode = xenstore_get(xsh, domid, "platform/tsc_mode");
 +    f->nested_hvm = xenstore_get(xsh, domid, "platform/exp-nested-hvm");
 +    f->cores_per_socket = xenstore_get(xsh, domid, "platform/cores-per-socket");
++    f->mmio_size = (uint64_t)xenstore_get(xsh, domid, "platform/mmio_size_mib") << 20;
 +
 +    /* Params going to hvmloader - need to convert "true" -> '1' as Xapi gets
 +     * this wrong when migrating from older hosts. */
@@ -1231,16 +1233,19 @@ index 0000000..c14a20e
 +                      unsigned long *store_mfn, unsigned long *console_mfn)
 +{
 +    int r;
++    struct xc_hvm_build_args args = {};
 +    struct flags f;
 +    get_flags(xsh, &f, domid);
 +
 +    configure_vcpus(xch, domid, f);
 +    configure_tsc(xch, domid, f);
 +
-+    r = xc_hvm_build_target_mem(xch, domid,
-+                                mem_max_mib,
-+                                mem_start_mib,
-+                                image_name);
++    args.mem_size = (uint64_t)mem_max_mib << 20;
++    args.mem_target = (uint64_t)mem_start_mib << 20;
++    args.image_file_name = image_name;
++    args.mmio_size = f.mmio_size;
++
++    r = xc_hvm_build(xch, domid, &args);
 +    if (r == 0)
 +        r = xc_cpuid_apply_policy(xch, domid);
 +
